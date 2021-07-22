@@ -81,15 +81,18 @@ export default {
     },
 
     noDuplicates() {
-      let noDuplicates = [...new Set(this.thrownNumbers)]
-      console.log(noDuplicates);
-      return noDuplicates;
+      // Can return immediatly
+      return [...new Set(this.thrownNumbers)]
+      // let noDuplicates = [...new Set(this.thrownNumbers)]
+      // console.log(noDuplicates);
+      // return noDuplicates;
     },
 
     sortedDice() {
-      if(this.thrownNumbers.length == 0) return []
+      // No need to check this if we loop over thrownNumbers
+      // if(this.thrownNumbers.length == 0) return []
 
-      let sortedNumbers = {
+      const sortedNumbers = {
         1: 0,
         2: 0,
         3: 0,
@@ -98,20 +101,28 @@ export default {
         6: 0
       };
 
-      for (const number in sortedNumbers) {
-        sortedNumbers[number] = this.thrownNumbers.filter(die => die == number).length   
+      // Looping over thrownNumbers is less intensive
+      // for (const number in sortedNumbers) {
+      //   sortedNumbers[number] = this.thrownNumbers.filter(die => die == number).length   
+      // }
+
+      for (const number of this.thrownNumbers) {
+        sortedNumbers[number]++
       }
 
       return sortedNumbers;
     },
 
     scoreThreeOfAkind() {
-      for (const number in this.sortedDice) {
-        if (this.sortedDice[number] >= 3) {
-          return this.total;
-        }
-      }
-      return 0;
+      // A little less code, same result, just for inspiration
+      const hasThree = Object.values(this.sortedDice).includes(3)
+      return hasThree ? this.total : 0
+      // for (const number in this.sortedDice) {
+      //   if (this.sortedDice[number] >= 3) {
+      //     return this.total;
+      //   }
+      // }
+      // return 0;
     },
 
     scoreFourOfAkind() {
@@ -124,6 +135,7 @@ export default {
     },
 
     scoreSmallStreet() {
+      // Nice!
       let smallStreetProgress = 0;
       if (this.noDuplicates.length >= 4) {
         for (let i = 1; i < this.noDuplicates.length; i++) {
@@ -154,18 +166,26 @@ export default {
     },
 
     scoreFullHouse() {
-      if (this.noDuplicates.length == 2) {
-        for (const number in this.sortedDice) {
-          if (this.sortedDice[number] >= 3) {
-            for (const number2 in this.sortedDice) {
-              if (this.sortedDice[number2] == 2) {
-                return 25;
-              }
-            }
-          }
-        }
-      }
-      return 0;
+      if (this.noDuplicates.length !== 2) return 0
+
+      // A little less code, same result, just for inspiration
+      const hasThree = Object.values(this.sortedDice).includes(3)
+      const hasTwo = Object.values(this.sortedDice).includes(2)
+
+      return hasTwo && hasThree ? 25 : 0
+
+      // if (this.noDuplicates.length == 2) {
+      //   for (const number in this.sortedDice) {
+      //     if (this.sortedDice[number] >= 3) {
+      //       for (const number2 in this.sortedDice) {
+      //         if (this.sortedDice[number2] == 2) {
+      //           return 25;
+      //         }
+      //       }
+      //     }
+      //   }
+      // }
+      // return 0;
     },
 
     scoreYahtzee() {
